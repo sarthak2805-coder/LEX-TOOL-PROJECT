@@ -1,0 +1,855 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LEX Studio | Compiler Workbench</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+    --bg: #080b16;
+    --panel: #111729;
+    --panel2: #161e33;
+    --border: #27334d;
+    --text: #f0f4ff;
+    --muted: #8d9bb7;
+    --blue: #648cff;
+    --purple: #a477ff;
+    --green: #40d9a2;
+    --red: #ff647c;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background:
+        radial-gradient(circle at 10% 0%, #19264a 0, transparent 35%),
+        radial-gradient(circle at 90% 100%, #251747 0, transparent 30%),
+        var(--bg);
+
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+}
+
+/* HEADER */
+
+header {
+    height: 82px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,15,29,0.85);
+    backdrop-filter: blur(15px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6%;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.logo {
+    width: 46px;
+    height: 46px;
+    border-radius: 13px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg,var(--blue),var(--purple));
+    font-size: 21px;
+    font-weight: 800;
+    box-shadow: 0 5px 25px #648cff55;
+}
+
+.brand h1 {
+    font-size: 21px;
+    letter-spacing: 1px;
+}
+
+.brand p {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--green);
+    font-size: 12px;
+    background: #12352e;
+    padding: 8px 13px;
+    border-radius: 20px;
+    border: 1px solid #24634f;
+}
+
+.dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green);
+}
+
+/* MAIN */
+
+main {
+    max-width: 1450px;
+    margin: auto;
+    padding: 38px 5%;
+}
+
+.welcome {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 28px;
+}
+
+.welcome h2 {
+    font-size: 27px;
+    margin-bottom: 6px;
+}
+
+.welcome p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.tag {
+    background: #1c2743;
+    color: #a8bdff;
+    border: 1px solid #34476f;
+    padding: 9px 15px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+/* STAT CARDS */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 17px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: linear-gradient(145deg,#151f36,#101729);
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 13px;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::after {
+    content: "";
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    right: -30px;
+    top: -35px;
+    background: var(--glow);
+    filter: blur(35px);
+    opacity: .35;
+}
+
+.stat-card small {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.stat-card strong {
+    display: block;
+    font-size: 29px;
+    margin-top: 8px;
+}
+
+.stat-card:nth-child(1) {--glow:#648cff;}
+.stat-card:nth-child(2) {--glow:#40d9a2;}
+.stat-card:nth-child(3) {--glow:#ff647c;}
+
+/* WORKSPACE */
+
+.workspace {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 20px;
+}
+
+.panel {
+    background: rgba(17,23,41,.95);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.panel-header {
+    padding: 19px 21px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.panel-header h3 {
+    font-size: 15px;
+}
+
+.panel-header span {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.panel-body {
+    padding: 20px;
+}
+
+.editor-label {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+textarea {
+    width: 100%;
+    height: 340px;
+    resize: vertical;
+    background: #080e1c;
+    border: 1px solid #293752;
+    border-radius: 10px;
+    padding: 18px;
+    color: #c9dcff;
+    font: 13px/1.9 'Space Mono', monospace;
+    outline: none;
+    tab-size: 4;
+}
+
+textarea:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px #648cff18;
+}
+
+.editor-footer {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 12px;
+}
+
+/* BUTTONS */
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+button {
+    border: 1px solid var(--border);
+    background: #1b2640;
+    color: var(--text);
+    padding: 11px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 12px;
+    transition: .2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    border-color: var(--blue);
+}
+
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.run-btn {
+    background: linear-gradient(120deg,#557ff0,#8965e8);
+    border: none;
+    box-shadow: 0 5px 18px #648cff35;
+    flex: 1;
+}
+
+/* RESULTS */
+
+.table-wrap {
+    overflow: auto;
+    max-height: 340px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    text-align: left;
+}
+
+th {
+    background: #1a2540;
+    color: #aebfe4;
+    padding: 13px;
+    position: sticky;
+    top: 0;
+}
+
+td {
+    padding: 12px 13px;
+    border-bottom: 1px solid #263149;
+    overflow-wrap: anywhere;
+}
+
+tbody tr:hover {
+    background: #1a2540;
+}
+
+td:first-child {
+    color: #8daeff;
+    font-weight: 700;
+}
+
+.empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 35px;
+}
+
+/* MESSAGE */
+
+.message {
+    margin-top: 17px;
+    background: #18243c;
+    border: 1px solid #35496f;
+    border-radius: 9px;
+    padding: 14px;
+    color: #b8caff;
+    font-size: 12px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.message.good {
+    background: #102b25;
+    border-color: #28654e;
+    color: #82e5bd;
+}
+
+.message.error {
+    background: #301923;
+    border-color: #743547;
+    color: #ffabb8;
+}
+
+/* FOOTER */
+
+footer {
+    text-align: center;
+    padding: 30px;
+    margin-top: 30px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 11px;
+}
+
+footer strong {
+    color: #a8bdff;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:850px) {
+    .workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    header {
+        padding: 0 4%;
+    }
+}
+
+@media(max-width:500px) {
+    .welcome h2 {
+        font-size: 21px;
+    }
+
+    .header-right {
+        display: none;
+    }
+
+    main {
+        padding: 25px 4%;
+    }
+
+    textarea {
+        height: 270px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="brand">
+        <div class="logo">L</div>
+
+        <div>
+            <h1>LEX STUDIO</h1>
+            <p>COMPILER DESIGN WORKBENCH</p>
+        </div>
+    </div>
+
+    <div class="header-right">
+        <div class="status">
+            <div class="dot"></div>
+            SCANNER READY
+        </div>
+    </div>
+
+</header>
+
+<main>
+
+    <div class="welcome">
+
+        <div>
+            <h2>Lexical Analysis Dashboard</h2>
+            <p>Write your source code and convert it into meaningful tokens.</p>
+        </div>
+
+        <div class="tag">C++ · LEXICAL ANALYZER</div>
+
+    </div>
+
+
+    <!-- STATISTICS -->
+
+    <div class="stats">
+
+        <div class="stat-card">
+            <small>Total Tokens</small>
+            <strong id="tokenCount">0</strong>
+        </div>
+
+        <div class="stat-card">
+            <small>Scanner Status</small>
+            <strong id="scannerStatus" style="font-size:19px;color:var(--green)">Ready</strong>
+        </div>
+
+        <div class="stat-card">
+            <small>Lexical Errors</small>
+            <strong id="errorCount">0</strong>
+        </div>
+
+    </div>
+
+
+    <!-- WORKSPACE -->
+
+    <div class="workspace">
+
+        <!-- CODE EDITOR -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+                <h3>01 / Source Code Editor</h3>
+                <span>INPUT TERMINAL</span>
+            </div>
+
+            <div class="panel-body">
+
+                <label class="editor-label">SOURCE FILE : main.cpp</label>
+
+                <textarea id="code" spellcheck="false">int total = 12;
+float ratio = 3.25;
+char grade = 'A';
+
+text = "value // inside a string";
+
+// Single line comment
+
+/* Multi-line comment
+   Example */
+
+if (total >= 10 && ratio != 0.0) {
+    total += 1;
+    total++;
+    return total;
+}</textarea>
+
+                <div class="editor-footer">
+                    <span>C++ SOURCE INPUT</span>
+                    <span id="charCount">0 Characters</span>
+                </div>
+
+                <div class="actions">
+
+                    <button id="sample">Load Sample</button>
+
+                    <button id="clear">Clear Code</button>
+
+                    <button class="run-btn" id="run">
+                        ▶ &nbsp; RUN LEXICAL ANALYZER
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RESULTS -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+                <h3>02 / Token Analysis</h3>
+                <span>OUTPUT TERMINAL</span>
+            </div>
+
+            <div class="panel-body">
+
+                <label class="editor-label">GENERATED TOKEN STREAM</label>
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Token Type</th>
+                                <th>Lexeme</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="rows">
+
+                            <tr>
+                                <td colspan="2" class="empty">
+                                    No analysis performed yet.
+                                    <br><br>
+                                    Click RUN LEXICAL ANALYZER
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div id="message" class="message good">
+                    System initialized successfully.
+                    Waiting for source code...
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<footer>
+    <strong>LEX STUDIO</strong> &nbsp; | &nbsp;
+    C++ Lexical Analyzer &nbsp; | &nbsp;
+    Compiler Design Project
+</footer>
+
+
+<script>
+
+const code = document.getElementById('code');
+const rows = document.getElementById('rows');
+const message = document.getElementById('message');
+
+const tokenCount = document.getElementById('tokenCount');
+const errorCount = document.getElementById('errorCount');
+const scannerStatus = document.getElementById('scannerStatus');
+
+const charCount = document.getElementById('charCount');
+
+const runBtn = document.getElementById('run');
+
+
+const sample = `int total = 12;
+float ratio = 3.25;
+char grade = 'A';
+
+text = "value // inside a string";
+
+// Single line comment
+
+/* Multi-line comment
+   Example */
+
+if (total >= 10 && ratio != 0.0) {
+    total += 1;
+    total++;
+    return total;
+}`;
+
+
+// CHARACTER COUNTER
+
+function updateCount() {
+    charCount.textContent = code.value.length + " Characters";
+}
+
+code.addEventListener('input', updateCount);
+
+updateCount();
+
+
+// LOAD SAMPLE
+
+document.getElementById('sample').onclick = () => {
+
+    code.value = sample;
+
+    updateCount();
+
+    message.className = 'message good';
+
+    message.textContent = 'Sample source code loaded successfully.';
+
+};
+
+
+// CLEAR CODE
+
+document.getElementById('clear').onclick = () => {
+
+    code.value = '';
+
+    rows.innerHTML = `
+        <tr>
+            <td colspan="2" class="empty">
+                Enter source code and run the analyzer.
+            </td>
+        </tr>
+    `;
+
+    tokenCount.textContent = '0';
+
+    errorCount.textContent = '0';
+
+    scannerStatus.textContent = 'Ready';
+
+    scannerStatus.style.color = 'var(--green)';
+
+    message.className = 'message good';
+
+    message.textContent = 'Editor cleared successfully.';
+
+    updateCount();
+
+};
+
+
+// RUN LEXER
+
+runBtn.onclick = async () => {
+
+    runBtn.disabled = true;
+
+    runBtn.textContent = 'ANALYZING...';
+
+    scannerStatus.textContent = 'Running';
+
+    scannerStatus.style.color = 'var(--blue)';
+
+    message.className = 'message';
+
+    message.textContent = 'Processing source code...';
+
+    try {
+
+        const response = await fetch('/run', {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify({
+                code: code.value
+            })
+
+        });
+
+
+        const data = await response.json();
+
+        if (!response.ok || data.error) {
+
+            throw new Error(
+                data.error || 'Scanner execution failed.'
+            );
+
+        }
+
+
+        // DISPLAY TOKENS
+
+        rows.replaceChildren();
+
+        if (!data.tokens.length) {
+
+            rows.innerHTML = `
+                <tr>
+                    <td colspan="2" class="empty">
+                        No tokens found.
+                    </td>
+                </tr>
+            `;
+
+        }
+
+
+        data.tokens.forEach(token => {
+
+            const tr = document.createElement('tr');
+
+            const type = document.createElement('td');
+
+            const lexeme = document.createElement('td');
+
+            type.textContent = token.type;
+
+            lexeme.textContent = token.lexeme;
+
+            tr.append(type, lexeme);
+
+            rows.appendChild(tr);
+
+        });
+
+
+        // UPDATE STATISTICS
+
+        tokenCount.textContent = data.tokens.length;
+
+        errorCount.textContent = data.errors.length;
+
+
+        // UPDATE STATUS
+
+        if (data.errors.length > 0) {
+
+            scannerStatus.textContent = 'Errors Found';
+
+            scannerStatus.style.color = 'var(--red)';
+
+            message.className = 'message error';
+
+            message.textContent = data.errors.join('\n');
+
+        }
+
+        else {
+
+            scannerStatus.textContent = 'Success';
+
+            scannerStatus.style.color = 'var(--green)';
+
+            message.className = 'message good';
+
+            message.textContent = data.tokens.length
+                ? 'Analysis completed successfully! No lexical errors found.'
+                : 'Analysis completed. No tokens were produced.';
+
+        }
+
+
+        if (data.stderr) {
+
+            message.textContent += '\n' + data.stderr;
+
+        }
+
+    }
+
+    catch(error) {
+
+        scannerStatus.textContent = 'Failed';
+
+        scannerStatus.style.color = 'var(--red)';
+
+        message.className = 'message error';
+
+        message.textContent = 'Error: ' + error.message;
+
+    }
+
+    finally {
+
+        runBtn.disabled = false;
+
+        runBtn.innerHTML = '▶ &nbsp; RUN LEXICAL ANALYZER';
+
+    }
+
+};
+
+
+// KEYBOARD SHORTCUT: CTRL + ENTER
+
+code.addEventListener('keydown', event => {
+
+    if (event.ctrlKey && event.key === 'Enter') {
+
+        event.preventDefault();
+
+        runBtn.click();
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

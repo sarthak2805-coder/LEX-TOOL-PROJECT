@@ -1,0 +1,4 @@
+int total = 25 + 5;
+if (total == 30) {
+    return total;
+}

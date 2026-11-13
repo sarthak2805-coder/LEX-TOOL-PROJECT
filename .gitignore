@@ -1,0 +1,25 @@
+﻿.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.vscode/
+.idea/
+*.log
+*.tmp
+build/
+*.exe
+*.bak
+*.backup
+Thumbs.db
+.DS_Store
+
+# Generated and backup files
+build/
+*.exe
+*backup*
+*.bak
+*.tmp
+__pycache__/
+.env
+
